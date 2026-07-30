@@ -16,7 +16,18 @@ def load_and_train_model():
     try:
         # Load the dataset
         df = pd.read_csv('df_clean.csv')
-        X = df.drop("label", axis=1)
+        
+        # We only want to train on features we can actually extract in real-time
+        EXTRACTABLE_FEATURES = [
+            'URLLength', 'DomainLength', 'IsDomainIP', 'IsHTTPS', 'NoOfSubDomain', 
+            'NoOfLettersInURL', 'NoOfDegitsInURL', 'LetterRatioInURL', 'DegitRatioInURL', 
+            'NoOfEqualsInURL', 'NoOfQMarkInURL', 'NoOfAmpersandInURL', 'NoOfOtherSpecialCharsInURL', 
+            'SpacialCharRatioInURL', 'LineOfCode', 'LargestLineLength', 'HasTitle', 'HasFavicon', 
+            'Robots', 'NoOfiFrame', 'HasExternalFormSubmit', 'HasSubmitButton', 'HasHiddenFields', 
+            'HasPasswordField', 'NoOfImage', 'NoOfCSS', 'NoOfJS'
+        ]
+        
+        X = df[EXTRACTABLE_FEATURES]
         y = df["label"]
         
         # Train test split and model training
@@ -63,10 +74,10 @@ if st.button("Predict"):
             
             prob_phish = probability[1]
             
-            if prediction == 1:
-                st.error(f"Prediction: **Phishing Website 🚨** (Confidence: {prob_phish:.2%})")
+            if prediction == 0:
+                st.error(f"Prediction: **Phishing Website 🚨** (Confidence: {probability[0]:.2%})")
             else:
-                st.success(f"Prediction: **Legitimate Website ✅** (Confidence: {probability[0]:.2%})")
+                st.success(f"Prediction: **Legitimate Website ✅** (Confidence: {probability[1]:.2%})")
                 
             with st.expander("View Extracted Features used for Prediction"):
                 st.dataframe(input_df)

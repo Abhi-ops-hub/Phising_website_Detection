@@ -90,7 +90,21 @@ def extract_features(url, default_sample):
         features['NoOfJS'] = len(soup.find_all('script'))
         
     except Exception as e:
-        # If fetch fails, keep default values
+        # If fetch fails, the site is dead or unreachable. 
+        # Zero out all HTML features so the model sees it as lacking any normal web content.
+        features['LineOfCode'] = 0
+        features['LargestLineLength'] = 0
+        features['HasTitle'] = 0
+        features['HasFavicon'] = 0
+        features['Robots'] = 0
+        features['NoOfiFrame'] = 0
+        features['HasExternalFormSubmit'] = 0
+        features['HasSubmitButton'] = 0
+        features['HasHiddenFields'] = 0
+        features['HasPasswordField'] = 0
+        features['NoOfImage'] = 0
+        features['NoOfCSS'] = 0
+        features['NoOfJS'] = 0
         print(f"Error fetching URL: {e}")
         
     # Return as a pandas DataFrame matching model structure
