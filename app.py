@@ -27,8 +27,9 @@ def load_and_train_model():
         model = RandomForestClassifier(n_estimators=100, random_state=42)
         model.fit(X_train, y_train)
         
-        # Save a sample row for default values for obscure features
-        sample_data = X_train.iloc[0].to_dict()
+        # Save a sample row of a typical legitimate website for obscure features so we default to "safe"
+        legit_samples = X_train[y_train == 0]
+        sample_data = legit_samples.median(numeric_only=True).to_dict()
         
         return model, X.columns.tolist(), sample_data, df
     except Exception as e:
